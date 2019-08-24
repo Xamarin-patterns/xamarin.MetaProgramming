@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Xamarin.MetaProgramming</AssemblyName>
+    <RootNamespace>Xamarin.MetaProgramming</RootNamespace>
+    <Authors>Ahmed Fouad</Authors>
+    <PackageProjectUrl>https://github.com/Xamarin-patterns/xamarin.MetaProgramming</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Xamarin-patterns/xamarin.MetaProgramming</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PostSharp" Version="6.2.11" />
+    <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249" />
+  </ItemGroup>
+
+</Project>
