@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Windows.Input;
 using PostSharp.Aspects;
 using Xamarin.Forms;
+using Xamarin.MetaProgramming.Commands;
 
 namespace Xamarin.MetaProgramming
 {
@@ -21,10 +23,10 @@ namespace Xamarin.MetaProgramming
             instance.RaisePropertyChanged(args.LocationName);
             foreach (var dependentProperty in _DependentProperties)
             {
-                if (dependentProperty.PropertyType == "ICommand")
+                if (typeof(IMPCommand).IsAssignableFrom(dependentProperty.PropertyType))
                 {
                     (args.Instance.GetType().GetProperty(dependentProperty.PropertyName)
-                        .GetValue(args.Instance) as Command).ChangeCanExecute();
+                        .GetValue(args.Instance) as IMPCommand).ChangeCanExecute();
                 }
                 else
                     instance.RaisePropertyChanged(dependentProperty.PropertyName);

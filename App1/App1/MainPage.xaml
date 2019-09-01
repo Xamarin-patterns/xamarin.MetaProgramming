@@ -5,9 +5,9 @@
              x:Class="App1.MainPage">
 
     <StackLayout>
-        <Entry Text="{Binding Name , Mode=TwoWay}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
-        <Label Text="{Binding WelcomeMsg}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />
-        <Button Text="Submit" Command="{Binding Command}" ></Button>
+        <Entry Text="{Binding Name , Mode=TwoWay}" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand"/>
+        <Label Text="{Binding WelcomeMsg}" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" />
+        <Button Text="Submit" Command="{Binding AsyncCommand}" ></Button>
     </StackLayout>
 
 </ContentPage>

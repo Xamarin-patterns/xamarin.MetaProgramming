@@ -6,11 +6,11 @@ namespace Xamarin.MetaProgramming
 {
     internal static class Helper
     {
-        internal static string GetMemberType(this LambdaExpression expression)
+        internal static Type GetMemberType(this LambdaExpression expression)
         {
             var memberExpression = (MemberExpression)expression.Body;
             var propertyInfo = (PropertyInfo)memberExpression.Member;
-            return propertyInfo.PropertyType.Name;
+            return propertyInfo.PropertyType;
         }
         internal static string GetMemberName(this Expression expression)
         {
