@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms.Internals;
+using Xamarin.MetaProgramming.Commands.Contracts;
 
 namespace Xamarin.MetaProgramming.Commands
 {
@@ -9,25 +12,31 @@ namespace Xamarin.MetaProgramming.Commands
     {
         
         private readonly Func<T,Task> _executeTask;
-        private readonly Predicate<object> _canExecute;
+        private readonly Predicate<T> _canExecute;
         private bool _looked;
+        private List<BaseContract> _contracts;
+
         public CommandAsync(Func<T, Task> executeTask) : this(executeTask, o => true)
         {
         }
 
-        public CommandAsync(Func<T, Task> executeTask, Predicate<object> canExecute)
+        public CommandAsync(Func<T, Task> executeTask, Predicate<T> canExecute)
         {
+            _contracts=new List<BaseContract>();
             _executeTask = executeTask;
             _canExecute = canExecute;
         }
 
         public bool CanExecute(object parameter)
         {
-            return !_looked && _canExecute.Invoke(parameter);
+            var contractNotSatisfied = _contracts.Any(contract => !contract.IsSatisfied(parameter));
+
+            return !contractNotSatisfied && !_looked && _canExecute.Invoke((T) parameter);
         }
 
         public async void Execute(object parameter)
         {
+            
             try
             {
                 _looked = true;
@@ -44,6 +53,14 @@ namespace Xamarin.MetaProgramming.Commands
         }
 
         public event EventHandler CanExecuteChanged;
+        public void AddContract(params BaseContract[] contracts)
+        {
+            _contracts.AddRange(contracts);
+            contracts.ForEach(contract => contract.SatisfactionChanged += (s, e) =>
+            {
+                ChangeCanExecute();
+            });
+        }
         public void ChangeCanExecute()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
@@ -56,19 +73,24 @@ namespace Xamarin.MetaProgramming.Commands
        private readonly Task _executeTask;
        private readonly Predicate<object> _canExecute;
        private bool _looked;
+       private List<BaseContract> _contracts;
+
        public CommandAsync(Task executeTask) :this(executeTask,o =>true )
        {
        }
 
         public CommandAsync(Task executeTask, Predicate<object> canExecute)
        {
-           _executeTask = executeTask;
+           _contracts=new List<BaseContract>();
+            _executeTask = executeTask;
            _canExecute = canExecute;
        }
 
        public bool CanExecute(object parameter)
        {
-           return !_looked && _canExecute.Invoke(parameter);
+           var contractNotSatisfied = _contracts.Any(contract => !contract.IsSatisfied(parameter));
+
+            return !contractNotSatisfied&&!_looked && _canExecute.Invoke(parameter);
        }
 
         public async void Execute(object parameter)
@@ -89,6 +111,11 @@ namespace Xamarin.MetaProgramming.Commands
         }
 
         public event EventHandler CanExecuteChanged;
+        public void AddContract(params BaseContract[] contracts)
+        {
+            _contracts.AddRange(contracts);
+            contracts.ForEach(contract => contract.SatisfactionChanged += (s, e) => ChangeCanExecute());
+        }
         public void ChangeCanExecute()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);

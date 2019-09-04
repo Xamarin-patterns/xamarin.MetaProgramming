@@ -7,22 +7,24 @@ using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.MetaProgramming;
 using Xamarin.MetaProgramming.Commands;
+using Xamarin.MetaProgramming.Commands.Contracts;
 
 namespace App1
 {
     [ViewModel(typeof(MainPageViewModelConfiguration))]
     public class MainPageViewModel
     {
-        [DefaultValue("xx")]
+        [DefaultValue("")]
         public string Name { get; set; } 
         public string WelcomeMsg => $"Hello {Name}";
         public IMPCommand Command { get; }
-        public CommandAsync<object> AsyncCommand { get; }
+        [WifiContract]
+        public Xamarin.MetaProgramming.Commands.Command<object> AsyncCommand { get; set; }
 
         public MainPageViewModel()
         {
             Command = new RelayCommand(() => { }, (obj) => Name.Length > 3);
-            AsyncCommand=new CommandAsync<object>((obj)=>Task.Delay(10000));
+            AsyncCommand=new Xamarin.MetaProgramming.Commands.Command<object>((obj)=>Task.Delay(10000));
         }
 
     }
